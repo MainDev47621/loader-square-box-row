@@ -1,68 +1,6 @@
-// Variables
-
-$background-color: #F0F0F0;
-
-$box-size: 1em;
-$box-size-md: 1.5em;
-$box-size-lg: 1.8em;
-
-$box-margin: 0.4em;
-$box-margin-md: 0.6em;
-$box-margin-lg: 0.8em;
-
-$box-border-size: 1px;
-
-
-
-@mixin breakpoint($point) {
-    @if $point == xl {
-        // 1120px
-        @media (min-width: 70em) {
-            @content;
-        }
-    } @else if $point == lg {
-        // 1024px
-        @media (min-width: 64em) {
-            @content;
-        }
-    } @else if $point == md {
-        // 768px
-        @media (min-width: 48em) {
-            @content;
-        }
-    } @else if $point == md-only {
-        // 767px
-        @media (max-width: 767px) {
-            @content;
-        }
-    } @else if $point == sm {
-        // 600px
-        @media (min-width: 37.5em) {
-            @content;
-        }
-    } @else if $point == sm-only {
-        @media (max-width: 599px) {
-            @content;
-        }
-    }
-}
-
-
-// Animation mixins
-
-
-
-
-// Flex placeholder
-
-%flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-// Styling elements
+@import './reset.scss';
+@import './variables.scss';
+@import './mixins_and_placeholders.scss';
 
 *, *::before {
     box-sizing: border-box;
@@ -93,12 +31,21 @@ body {
         &::before {
             content: '';
             position: absolute;
-            width: inherit;
-            height: inherit;
             top: -1 * $box-border-size;
             left: -1 * $box-border-size;
-            border: $box-border-size solid lightblue;
-            transform: scale(1.7);
+            bottom: -2 * $box-border-size;
+            right: -2 * $box-border-size;
+            border: 2 * $box-border-size solid #000;
+            @include animation('animate #{$animationDuration} infinite');
+            @include transform(scale(1));
+        }
+    }
+
+    @for $i from 1 through $numOfBoxes {
+        .box:nth-child(#{$i}) {
+            &::before {
+                @include animation-delay(($i - 1) * (3 / 4) * $animationDuration / $numOfBoxes);
+            }
         }
     }
 }
@@ -121,5 +68,19 @@ body {
             height: $box-size-lg;
             margin: 0 $box-margin-lg;
         }
+    }
+}
+
+@include keyframes(animate) {
+    0% {
+        @include transform(scale(1.7));
+    }
+
+    60% {
+        @include transform(scale(1));
+    }
+
+    100% {
+        @include transform(scale(1));
     }
 }
